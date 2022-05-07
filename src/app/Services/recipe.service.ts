@@ -28,14 +28,12 @@ export class RecipeService {
   constructor() {}
 
   addRecipe(recipe: any) {
-    let newRecipes = this.recipes.value.concat(recipe);
+    const newRecipes = [...this.recipes.value, recipe];
     this.recipes.next(newRecipes);
   }
 
   deleteRecipe(id: number) {
-    let newRecipes = this.recipes.value.filter((recipe) => {
-      return recipe.id !== id;
-    });
+    const newRecipes = this.recipes.value.filter((recipe) => recipe.id !== id);
     this.recipes.next(newRecipes);
   }
 }

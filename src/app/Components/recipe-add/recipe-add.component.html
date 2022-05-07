@@ -64,10 +64,9 @@
     <div formArrayName="ingredients">
       <div class="mt-4">
         <ng-container
-          *ngFor="let ingredient of ingredients.controls; index as i"
-          [formGroupName]="i"
+          *ngFor="let ingredient of ingredientsAlias.controls; index as i"
         >
-          <div class="row mb-2">
+          <div class="row mb-2" [formGroupName]="i">
             <div class="col-9">
               <input type="text" class="form-control" formControlName="item" />
               <div

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { debounceTime } from 'rxjs';
 import { RecipeService } from 'src/app/Services/recipe.service';
 
 @Component({
@@ -11,54 +12,61 @@ import { RecipeService } from 'src/app/Services/recipe.service';
 export class RecipeAddComponent implements OnInit {
   recipeForm!: FormGroup;
   imageSRC = '';
-  ingredients = new FormArray([]);
 
-  constructor(private dataRecipe: RecipeService, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private dataRecipe: RecipeService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.initForm();
+
     const presentChildRoute = this.router.url.split('/');
-    if (presentChildRoute[2] === 'new') {
-      this.recipeForm = new FormGroup({
-        name: new FormControl('', [Validators.required]),
-        imageURL: new FormControl('', [Validators.required]),
-        description: new FormControl('', [Validators.required]),
-        ingredients: this.ingredients,
-      });
-    } else if (presentChildRoute[3] === 'edit') {
-      const id = Number(presentChildRoute[2]);
+    if (presentChildRoute[3] === 'edit') {
+      const id = +presentChildRoute[2];
       this.dataRecipe.recipes.subscribe((res) => {
-        this.recipeForm = new FormGroup({
-          name: new FormControl(res[id - 1].name, [Validators.required]),
-          imageURL: new FormControl(res[id - 1].imageURL, [
-            Validators.required,
-          ]),
-          description: new FormControl(res[id - 1].description, [
-            Validators.required,
-          ]),
-          ingredients: this.ingredients,
-        });
-        this.imageSRC = res[id - 1].imageURL;
+        const form = this.recipeForm;
+        const editRecipe = res.find((i) => i.id === id);
+        form.addControl('id', this.fb.control(editRecipe.id));
+        form.get('name')?.setValue(editRecipe.name);
+        form.get('imageURL')?.setValue(editRecipe.imageURL);
+        form.get('description')?.setValue(editRecipe.description);
+
+        for (let i = 0; i < editRecipe.ingredients.length; i++) {
+          this.addIngredient();
+        }
+        this.ingredientsAlias.setValue(editRecipe.ingredients);
       });
     }
-    this.recipeForm.valueChanges.subscribe((res) => {
+    this.recipeForm.valueChanges.pipe(debounceTime(500)).subscribe((res) => {
       this.imageSRC = res.imageURL;
     });
   }
 
+  initForm(): void {
+    const controls = {
+      name: this.fb.control('', [Validators.required]),
+      imageURL: this.fb.control('', [Validators.required]),
+      description: this.fb.control('', [Validators.required]),
+      ingredients: this.fb.array([]),
+    };
+    this.recipeForm = this.fb.group(controls);
+  }
+
   addIngredient() {
-    this.ingredients.push(
-      new FormGroup({
-        item: new FormControl('', [Validators.required]),
-        amount: new FormControl('', [Validators.min(1)]),
-      })
-    );
+    this.ingredientsAlias.push(this.newIngredient());
   }
 
   deleteIngredient(i: number) {
-    this.ingredients.removeAt(i);
+    this.ingredientsAlias.removeAt(i);
   }
 
   onSubmit() {
+    if (this.recipeForm.invalid) {
+      console.log('invalid form');
+      return;
+    }
     const presentChildRoute = this.router.url.split('/');
     if (presentChildRoute[2] === 'new') {
       const newId = this.dataRecipe.recipes.subscribe.length + 1;
@@ -76,5 +84,16 @@ export class RecipeAddComponent implements OnInit {
 
   onCancel() {
     this.router.navigateByUrl('');
+  }
+
+  get ingredientsAlias(): FormArray {
+    return this.recipeForm.get('ingredients') as FormArray;
+  }
+
+  newIngredient(): FormGroup {
+    return this.fb.group({
+      item: this.fb.control('', [Validators.required]),
+      amount: this.fb.control('', [Validators.required, Validators.min(1)]),
+    });
   }
 }
