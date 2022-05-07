@@ -1,0 +1,35 @@
+<div>
+  <div class="mb-3">
+    <img src="{{ recipeDetail.imageURL }}" width="300" height="350" />
+  </div>
+  <h3>{{ recipeDetail.name }}</h3>
+  <div class="dropdown">
+    <button
+      class="btn btn-primary dropdown-toggle"
+      type="button"
+      (click)="openDropdown()"
+    >
+      Manage Recipe
+    </button>
+    <ul class="dropdown-menu" [class.show]="toggle">
+      <li>
+        <a class="dropdown-item" routerLink="/shop-list">To Shopping List</a>
+      </li>
+      <li><a class="dropdown-item" routerLink="edit">Edit Recipe</a></li>
+      <li>
+        <a class="dropdown-item" (click)="deleteRecipe(recipeDetail.id)"
+          >Delete Recipe</a
+        >
+      </li>
+    </ul>
+  </div>
+  <p class="mt-2 mb-1">{{ recipeDetail.name }}</p>
+  <ul class="list-group mb-5">
+    <li
+      class="list-group-item"
+      *ngFor="let ingredient of recipeDetail.ingredients"
+    >
+      {{ ingredient.item }} - {{ ingredient.amount }}
+    </li>
+  </ul>
+</div>
