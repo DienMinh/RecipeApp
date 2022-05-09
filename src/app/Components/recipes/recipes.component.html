@@ -6,7 +6,7 @@
       <app-recipe-list></app-recipe-list>
     </div>
     <div class="col-7">
-      <h4>Please select a Recipe</h4>
+      <h4 *ngIf="isTitle">Please select a Recipe</h4>
       <router-outlet></router-outlet>
     </div>
   </div>

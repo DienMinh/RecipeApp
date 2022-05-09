@@ -1,1 +1,84 @@
-<p>shopping-list works!</p>
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-12 p-0">
+      <form [formGroup]="shoppingForm">
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label class="font-weight-bold">Name</label>
+            <input type="text" class="form-control" formControlName="name" />
+            <div
+              *ngIf="
+                shoppingForm.controls['name']?.invalid &&
+                shoppingForm.controls['name']?.touched
+              "
+              class="alert alert-danger mt-2"
+              role="alert"
+            >
+              Name is required!
+            </div>
+          </div>
+          <div class="form-group col-md-6">
+            <label class="font-weight-bold">Amount</label>
+            <input
+              type="number"
+              class="form-control w-25"
+              min="1"
+              formControlName="amount"
+            />
+            <div
+              *ngIf="
+                shoppingForm.controls['amount']?.invalid &&
+                shoppingForm.controls['amount']?.touched
+              "
+              class="alert alert-danger mt-2"
+              role="alert"
+            >
+              Amount must be greater than 1
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="mb-5">
+        <button
+          [disabled]="shoppingForm.invalid"
+          type="button"
+          class="btn btn-success mr-2"
+          (click)="modeUse ? updateIngredient() : addIngredient()"
+        >
+          {{ modeUse ? "Update" : "Add" }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger mr-2"
+          *ngIf="modeUse"
+          (click)="deleteIngredient()"
+        >
+          Delete
+        </button>
+        <button
+          *ngIf="modeClearBtn"
+          type="button"
+          class="btn btn-primary"
+          (click)="clearAmount()"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+    <div class="col-md-6"></div>
+  </div>
+  <div class="row">
+    <ul class="list-group w-100">
+      <ng-container *ngFor="let ingredient of ingredients">
+        <li
+          style="cursor: pointer"
+          class="list-group-item"
+          routerLink="{{ ingredient.id }}"
+          (click)="onIngredientDetail(ingredient)"
+        >
+          {{ ingredient.name }} ({{ ingredient.amount }})
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+</div>
