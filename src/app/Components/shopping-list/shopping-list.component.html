@@ -22,7 +22,6 @@
             <input
               type="number"
               class="form-control w-25"
-              min="1"
               formControlName="amount"
             />
             <div
@@ -58,10 +57,22 @@
         <button
           *ngIf="modeClearBtn"
           type="button"
-          class="btn btn-primary"
+          class="btn btn-primary mr-2"
           (click)="clearAmount()"
         >
           Clear
+        </button>
+        <button
+          *ngIf="
+            shoppingForm.controls['name']?.touched ||
+            shoppingForm.controls['amount']?.touched ||
+            modeUse
+          "
+          type="button"
+          class="btn btn-primary"
+          (click)="cancelAddIngredient()"
+        >
+          Cancel
         </button>
       </div>
     </div>
@@ -70,12 +81,7 @@
   <div class="row">
     <ul class="list-group w-100">
       <ng-container *ngFor="let ingredient of ingredients">
-        <li
-          style="cursor: pointer"
-          class="list-group-item"
-          routerLink="{{ ingredient.id }}"
-          (click)="onIngredientDetail(ingredient)"
-        >
+        <li class="list-group-item" (click)="onIngredientDetail(ingredient)">
           {{ ingredient.name }} ({{ ingredient.amount }})
         </li>
       </ng-container>

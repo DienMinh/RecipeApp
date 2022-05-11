@@ -89,7 +89,7 @@ export class RecipeAddComponent implements OnInit {
       });
     } else if (presentChildRoute[3] === 'edit') {
       const id = +presentChildRoute[2];
-      this.dataRecipe.recipes.subscribe((res) => {
+      this.dataRecipe.recipes.pipe(take(1)).subscribe((res) => {
         res[id - 1] = this.recipeForm.value;
         this.router.navigateByUrl('');
       });

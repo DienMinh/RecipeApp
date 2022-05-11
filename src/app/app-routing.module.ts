@@ -34,12 +34,6 @@ const routes: Routes = [
   {
     path: 'shop-list',
     component: ShoppingListComponent,
-    children: [
-      {
-        path: ':id',
-        component: ShoppingListComponent,
-      },
-    ],
   },
   {
     path: '**',

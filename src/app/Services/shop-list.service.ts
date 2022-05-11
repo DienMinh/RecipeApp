@@ -16,9 +16,13 @@ export class ShopListService {
     this.ingredients.push(ingredient);
   }
 
-  updateIngredient(id: number, ingredient: any) {
-    this.ingredients[id - 1].name = ingredient.name;
-    this.ingredients[id - 1].amount = ingredient.amount;
+  updateIngredient(ingredient: any) {
+    this.ingredients.forEach((item) => {
+      if (item.id === ingredient.id) {
+        item.name = ingredient.name;
+        item.amount = ingredient.amount;
+      }
+    });
   }
 
   deleteIngredient(id: number) {

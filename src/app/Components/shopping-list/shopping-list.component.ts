@@ -9,7 +9,7 @@ import { ShopListService } from 'src/app/Services/shop-list.service';
   styleUrls: ['./shopping-list.component.scss'],
 })
 export class ShoppingListComponent implements OnInit {
-  ingredients!: any[];
+  ingredients: any[] = [];
   modeUse = false;
   modeClearBtn = false;
   shoppingForm!: FormGroup;
@@ -23,11 +23,7 @@ export class ShoppingListComponent implements OnInit {
       amount: new FormControl(0, [Validators.required, Validators.min(1)]),
     });
     this.shoppingForm.valueChanges.subscribe((res) => {
-      if (res.amount > 0) {
-        this.modeClearBtn = true;
-      } else {
-        this.modeClearBtn = false;
-      }
+      this.modeClearBtn = res.amount > 0 ? true : false;
     });
   }
 
@@ -43,8 +39,18 @@ export class ShoppingListComponent implements OnInit {
     this.shoppingForm.reset({ name: '', amount: 0 });
   }
 
+  cancelAddIngredient() {
+    if (this.modeUse) {
+      this.shoppingForm.reset({ name: '', amount: 0 });
+      this.modeUse = false;
+    }
+    this.shoppingForm.reset({ name: '', amount: 0 });
+  }
+
   onIngredientDetail(ingredient: any) {
     this.modeUse = true;
+    this.shoppingForm.addControl('id', new FormControl());
+    this.shoppingForm.get('id')?.setValue(ingredient.id);
     this.shoppingForm.get('name')?.setValue(ingredient.name);
     this.shoppingForm.get('amount')?.setValue(ingredient.amount);
   }
@@ -54,22 +60,19 @@ export class ShoppingListComponent implements OnInit {
       return;
     }
 
-    const id = +this.router.url.split('/')[2];
     const ingredient = this.shoppingForm.value;
 
-    this.dataShopList.updateIngredient(id, ingredient);
+    this.dataShopList.updateIngredient(ingredient);
     this.shoppingForm.reset({ name: '', amount: 0 });
     this.modeUse = false;
-    this.router.navigateByUrl('/shop-list');
   }
 
   deleteIngredient() {
-    const id = +this.router.url.split('/')[2];
+    const id = this.shoppingForm.value.id;
 
     this.dataShopList.deleteIngredient(id);
     this.shoppingForm.reset({ name: '', amount: 0 });
     this.modeUse = false;
-    this.router.navigateByUrl('/shop-list');
   }
 
   clearAmount() {

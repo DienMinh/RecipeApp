@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { RecipeService } from 'src/app/Services/recipe.service';
 
 @Component({
@@ -7,13 +8,19 @@ import { RecipeService } from 'src/app/Services/recipe.service';
   styleUrls: ['./recipe-list.component.scss'],
 })
 export class RecipeListComponent implements OnInit {
+  private subscription: Subscription = new Subscription();
   recipeList!: any[];
 
   constructor(private dataRecipe: RecipeService) {}
 
   ngOnInit(): void {
-    this.dataRecipe.recipes.subscribe((res) => {
-      this.recipeList = res;
-    });
+    this.subscription.add(
+      this.dataRecipe.recipes.subscribe((res) => {
+        this.recipeList = res;
+      })
+    );
+  }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

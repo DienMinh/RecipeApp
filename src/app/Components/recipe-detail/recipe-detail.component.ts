@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map, switchMap } from 'rxjs';
 import { RecipeService } from 'src/app/Services/recipe.service';
 
 @Component({
@@ -18,14 +19,20 @@ export class RecipeDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe((param) => {
-      const id = Number(param['id']);
-      this.dataRecipe.recipes.subscribe((res) => {
-        this.recipeDetail = res.filter((item) => {
-          return item.id === id;
-        })[0];
+    this.route.params
+      .pipe(
+        switchMap((p) => {
+          const id = Number(p['id']);
+          return this.dataRecipe.recipes.pipe(
+            map((recipes: any[]) => {
+              return recipes.find((item: any) => item.id === id);
+            })
+          );
+        })
+      )
+      .subscribe((selectedRecipe: any) => {
+        this.recipeDetail = selectedRecipe;
       });
-    });
   }
 
   openDropdown() {
