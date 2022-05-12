@@ -1,0 +1,14 @@
+<ng-container *ngFor="let recipe of recipeList">
+  <div
+    class="d-flex justify-content-between border rounded p-2 mb-3"
+    routerLink="{{ recipe.id }}"
+  >
+    <div>
+      <h5>{{ recipe.name }}</h5>
+      <p class="m-0">{{ recipe.name }}</p>
+    </div>
+    <div>
+      <img src="{{ recipe.imageURL }}" width="60" height="60" />
+    </div>
+  </div>
+</ng-container>
