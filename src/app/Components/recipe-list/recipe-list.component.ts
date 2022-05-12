@@ -14,11 +14,9 @@ export class RecipeListComponent implements OnInit {
   constructor(private dataRecipe: RecipeService) {}
 
   ngOnInit(): void {
-    this.subscription.add(
-      this.dataRecipe.recipes.subscribe((res) => {
-        this.recipeList = res;
-      })
-    );
+    this.subscription = this.dataRecipe.recipes.subscribe((res) => {
+      this.recipeList = res;
+    });
   }
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
