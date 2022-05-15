@@ -19,12 +19,14 @@ export class ShopListService {
   }
 
   updateIngredient(ingredient: any) {
-    this.ingredients.value.forEach((item) => {
-      if (item.id === ingredient.id) {
-        item.name = ingredient.name;
-        item.amount = ingredient.amount;
+    const length = this.ingredients.value.length;
+    for (let i = 0; i < length; i++) {
+      if (this.ingredients.value[i].id === ingredient.id) {
+        this.ingredients.value[i].name = ingredient.name;
+        this.ingredients.value[i].amount = ingredient.amount;
+        break;
       }
-    });
+    }
   }
 
   deleteIngredient(id: number) {
