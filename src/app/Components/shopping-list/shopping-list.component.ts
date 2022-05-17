@@ -37,7 +37,9 @@ export class ShoppingListComponent implements OnInit {
     if (this.shoppingForm.invalid) {
       return;
     }
-    this.shoppingForm.value.id = this.dataShopList.ingredients.value.length + 1;
+    const newId = this.dataShopList.ingredients.value.length + 1;
+    this.shoppingForm.get('id')?.setValue(newId);
+
     const newIngredient = this.shoppingForm.value;
     this.dataShopList.addIngredient(newIngredient);
     this.shoppingForm.reset({ name: '', amount: 0 });
