@@ -21,6 +21,7 @@
             <label class="font-weight-bold">Amount</label>
             <input
               type="number"
+              min="0"
               class="form-control w-25"
               formControlName="amount"
             />
@@ -70,7 +71,7 @@
           "
           type="button"
           class="btn btn-primary"
-          (click)="cancelAddIngredient()"
+          (click)="cancelHandler()"
         >
           Cancel
         </button>
